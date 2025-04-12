@@ -46,6 +46,8 @@ jobs:
         uses: actions/configure-pages@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          enablement: true
+          branch: main
       - name: Restore cache
         uses: actions/cache@v4
         with:
