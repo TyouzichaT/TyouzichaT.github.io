@@ -383,7 +383,7 @@ export default function Home() {
               className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-8 shadow-lg border border-gray-700"
             >
               <p className="text-gray-300 mb-6 text-lg">
-                Interested in collaboration or discussing financial technology projects? Let's connect!
+                Interested in collaboration or discussing financial technology projects? Let&apos;s connect!
               </p>
               <div className="flex flex-wrap gap-4">
                 <motion.a
