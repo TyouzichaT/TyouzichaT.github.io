@@ -73,7 +73,7 @@ export default function Home() {
               <div className="absolute inset-0 bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 rounded-full p-1">
                 <div className="relative w-full h-full rounded-full overflow-hidden">
                   <Image
-                    src="/images/YZ.jpg"
+                    src="/images/profile.jpg"
                     alt="You Zuo"
                     fill
                     className="object-cover"
