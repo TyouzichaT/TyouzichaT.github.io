@@ -13,13 +13,14 @@ import {
   Filler,
 } from "chart.js";
 import { useEffect, useState } from "react";
-import { 
-  EconomicData, 
-  CoreCpiData, 
-  PceData, 
-  TreasuryData, 
+import {
+  EconomicData,
+  CoreCpiData,
+  PceData,
+  TreasuryData,
   ApiResponse,
-  ChartOptions 
+  ChartOptions,
+  SynthesisData
 } from "../../components/usMacro/types";
 import DashboardSummary from "../../components/usMacro/DashboardSummary";
 import FederalFundsChart from "../../components/usMacro/FederalFundsChart";
@@ -79,156 +80,104 @@ export default function UsMacro() {
   const [treasuryData, setTreasuryData] = useState<TreasuryData[]>([]);
   const [unemploymentData, setUnemploymentData] = useState<EconomicData[]>([]);
   const [federalfundsData, setFederalfundsData] = useState<EconomicData[]>([]);
+  const [synthesisData, setSynthesisData] = useState<SynthesisData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        type SetterFunction<T> = React.Dispatch<React.SetStateAction<T[]>>;
+        // Use the synthesis endpoint that returns all data in one call
+        const API_BASE_URL = process.env.API_BASE_URL || 'https://cool-lab-fe67.zuoyou1998.workers.dev';
+        const apiUrl = `${API_BASE_URL}/?type=synthesis`;
+        console.log(`Fetching data from: ${apiUrl}`);
 
-        const types = [
-          { type: 'nonfarm', setter: setNonfarmData as SetterFunction<EconomicData> },
-          { type: 'gdp', setter: setGdpData as SetterFunction<EconomicData> },
-          { type: 'pce', setter: setPceData as SetterFunction<PceData> },
-          { type: 'treasury', setter: setTreasuryData as SetterFunction<TreasuryData> },
-          { type: 'unemployment', setter: setUnemploymentData as SetterFunction<EconomicData> },
-          { type: 'federalfunds', setter: setFederalfundsData as SetterFunction<EconomicData> },
-          { type: 'cpi', setter: setCpiData as SetterFunction<CoreCpiData> }
-        ];
+        const response = await fetch(apiUrl);
 
-        const promises = types.map(({ type, setter }) => {
-          const fetchAndProcessData = async () => {
-            try {
-              // Use API_BASE_URL for both environments
-              const API_BASE_URL = process.env.API_BASE_URL || 'https://green-heart-aaf5.zuoyou1998.workers.dev';
+        if (!response.ok) {
+          console.error(`API error: ${response.status} ${response.statusText}`);
+          throw new Error(`Failed to fetch data: ${response.status} ${response.statusText}`);
+        }
 
-              // Try standard API endpoint format
-              const apiUrl = `${API_BASE_URL}/?type=${type}`;
-              console.log(`Fetching data from: ${apiUrl}`);
+        const result = await response.json();
 
-              const response = await fetch(apiUrl);
+        // Update all state variables with the data from the single API call
+        if (result.gdp && Array.isArray(result.gdp)) {
+          try {
+            const processedData: EconomicData[] = result.gdp.map((item: Record<string, unknown>) => {
+              // Safely extract values handling potential different formats
+              const quarter = typeof item.Quarter === 'string' ? item.Quarter : item["Quarter"];
+              const nominalGdp = typeof item["Nominal GDP (% change)"] === 'string' ?
+                parseFloat(item["Nominal GDP (% change)"] as string) :
+                (item["Nominal GDP (% change)"] || 0);
+              const realGdp = typeof item["Real GDP (% change)"] === 'string' ?
+                parseFloat(item["Real GDP (% change)"] as string) :
+                (item["Real GDP (% change)"] || 0);
 
-              if (!response.ok) {
-                console.error(`API error: ${response.status} ${response.statusText}`);
-                throw new Error(`Failed to fetch ${type} data: ${response.status} ${response.statusText}`);
-              }
+              return {
+                date: quarter as string,
+                value: nominalGdp as number,
+                realValue: realGdp as number
+              };
+            });
+            setGdpData(processedData);
+          } catch (mapError) {
+            console.error(`Error processing GDP data:`, mapError);
+            setGdpData([]);
+          }
+        } else {
+          setGdpData([]);
+        }
 
-              const result: ApiResponse<unknown> = await response.json();
+        // Set treasury data
+        if (result.treasury && Array.isArray(result.treasury)) {
+          setTreasuryData(result.treasury);
+        } else {
+          setTreasuryData([]);
+        }
 
-              if (type === 'gdp') {
-                // Process GDP data to include both nominal and real values
-                if (!result || !Array.isArray(result)) {
-                  console.error(`Invalid GDP data format received:`, result);
-                  // Set empty array to avoid rendering errors
-                  (setter as SetterFunction<EconomicData>)([]);
-                  return;
-                }
+        // Set PCE data
+        if (result.pce && Array.isArray(result.pce)) {
+          setPceData(result.pce);
+        } else {
+          setPceData([]);
+        }
 
-                try {
-                  const processedData: EconomicData[] = result.map((item: Record<string, unknown>) => {
-                    // Safely extract values handling potential different formats
-                    const quarter = typeof item.Quarter === 'string' ? item.Quarter : item["Quarter"];
-                    const nominalGdp = typeof item["Nominal GDP (% change)"] === 'string' ?
-                      parseFloat(item["Nominal GDP (% change)"] as string) :
-                      (item["Nominal GDP (% change)"] || 0);
-                    const realGdp = typeof item["Real GDP (% change)"] === 'string' ?
-                      parseFloat(item["Real GDP (% change)"] as string) :
-                      (item["Real GDP (% change)"] || 0);
+        // Set CPI data
+        if (result.cpi && Array.isArray(result.cpi)) {
+          setCpiData(result.cpi);
+        } else {
+          setCpiData([]);
+        }
 
-                    return {
-                      date: quarter as string,
-                      value: nominalGdp as number,
-                      realValue: realGdp as number
-                    };
-                  });
-                  (setter as SetterFunction<EconomicData>)(processedData);
-                } catch (mapError) {
-                  console.error(`Error processing GDP data:`, mapError);
-                  // Set empty array to avoid rendering errors
-                  (setter as SetterFunction<EconomicData>)([]);
-                }
-              } else if (type === 'treasury') {
-                // Process Treasury data
-                if (!result || !Array.isArray(result)) {
-                  console.error(`Invalid treasury data format received:`, result);
-                  (setter as SetterFunction<TreasuryData>)([]);
-                  return;
-                }
-                (setter as SetterFunction<TreasuryData>)(result);
-              } else {
-                // Handle all other data types
-                if (!result || !Array.isArray(result)) {
-                  console.error(`Invalid ${type} data format received:`, result);
-                  if (type === 'pce') {
-                    (setter as SetterFunction<PceData>)([]);
-                  } else if (type === 'cpi') {
-                    (setter as SetterFunction<CoreCpiData>)([]);
-                  } else {
-                    (setter as SetterFunction<EconomicData>)([]);
-                  }
-                  return;
-                }
+        // Set unemployment data
+        if (result.unemployment && Array.isArray(result.unemployment)) {
+          setUnemploymentData(result.unemployment);
+        } else {
+          setUnemploymentData([]);
+        }
 
-                // Process data according to its type
-                if (type === 'pce') {
-                  const processedData: PceData[] = result;
-                  (setter as SetterFunction<PceData>)(processedData);
-                } else if (type === 'cpi') {
-                  const processedData: CoreCpiData[] = result;
-                  (setter as SetterFunction<CoreCpiData>)(processedData);
-                } else {
-                  const processedData: EconomicData[] = result;
-                  (setter as SetterFunction<EconomicData>)(processedData);
-                }
-              }
-            } catch (err) {
-              console.error(`Error fetching ${type}:`, err);
-              // Set empty array to prevent charts from breaking
-              if (type === 'gdp') {
-                (setter as SetterFunction<EconomicData>)([]);
-              } else if (type === 'pce') {
-                (setter as SetterFunction<PceData>)([]);
-              }
-              else if (type === 'treasury') {
-                (setter as SetterFunction<TreasuryData>)([]);
-              }
-              else if (type === 'cpi') {
-                (setter as SetterFunction<CoreCpiData>)([]);
-              }
-              else {
-                (setter as SetterFunction<EconomicData>)([]);
-              }
+        // Set nonfarm data
+        if (result.nonfarm && Array.isArray(result.nonfarm)) {
+          setNonfarmData(result.nonfarm);
+        } else {
+          setNonfarmData([]);
+        }
 
-              // Don't rethrow, handle locally to prevent Promise.all from failing completely
-              return null;
-            }
-          };
+        // Set federal funds data
+        if (result.federalFunds && Array.isArray(result.federalFunds)) {
+          setFederalfundsData(result.federalFunds);
+        } else {
+          setFederalfundsData([]);
+        }
 
-          return fetchAndProcessData().catch(err => {
-            console.error(`Error fetching ${type}:`, err);
-            // Set empty array to prevent charts from breaking
-            if (type === 'gdp') {
-              (setter as SetterFunction<EconomicData>)([]);
-            } else if (type === 'pce') {
-              (setter as SetterFunction<PceData>)([]);
-            }
-            else if (type === 'treasury') {
-              (setter as SetterFunction<TreasuryData>)([]);
-            }
-            else if (type === 'cpi') {
-              (setter as SetterFunction<CoreCpiData>)([]);
-            }
-            else {
-              (setter as SetterFunction<EconomicData>)([]);
-            }
+        // Set synthesis analysis data
+        if (result.synthesis) {
+          setSynthesisData(result.synthesis);
+        } else {
+          setSynthesisData(null);
+        }
 
-            // Don't rethrow, handle locally to prevent Promise.all from failing completely
-            return null;
-          });
-        });
-
-        await Promise.all(promises);
       } catch (err) {
         console.error("Error in data fetching:", err);
         setError(err instanceof Error ? err.message : "An error occurred");
@@ -282,8 +231,8 @@ export default function UsMacro() {
             </div>
             <h2 className="text-2xl font-semibold mb-2 text-red-400">Unable to Load Data</h2>
             <p className="text-gray-400 text-center mb-4">{error}</p>
-            <button 
-              onClick={() => window.location.reload()} 
+            <button
+              onClick={() => window.location.reload()}
               className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-md transition-colors text-white font-medium"
             >
               Try Again
@@ -294,13 +243,28 @@ export default function UsMacro() {
     );
   }
 
-  // Extract latest Fed Funds Rate and PCE values for the dashboard
+  // Extract latest values for the dashboard
   const latestFedFundsRate = {
-    lower: federalfundsData.length > 0 ? federalfundsData[0].federal_funds_rate_lower : undefined,
-    upper: federalfundsData.length > 0 ? federalfundsData[0].federal_funds_rate_upper : undefined
+    lower: federalfundsData.length > 0 ? federalfundsData[federalfundsData.length - 1].federal_funds_rate_lower : undefined,
+    upper: federalfundsData.length > 0 ? federalfundsData[federalfundsData.length - 1].federal_funds_rate_upper : undefined
   };
-  
-  const latestPceValue = pceData.length > 0 ? parseFloat(pceData[0]["Core PCE Level"]) : undefined;
+
+  const latestPceValue = pceData.length > 0 ? parseFloat(pceData[pceData.length - 1]["Core PCE Level"]) : undefined;
+  const latestCpiValue = cpiData.length > 0 ? cpiData[cpiData.length - 1]["Core CPI YoY (% change)"] : undefined;
+
+  const latestGdp = {
+    nominal: gdpData.length > 0 ? gdpData[gdpData.length - 1].value : undefined,
+    real: gdpData.length > 0 ? gdpData[gdpData.length - 1].realValue : undefined,
+  };
+
+  const latestUnemployment = unemploymentData.length > 0 ? unemploymentData[unemploymentData.length - 1].value : undefined;
+  const latestNonfarm = nonfarmData.length > 0 ? nonfarmData[nonfarmData.length - 1].value : undefined;
+
+  const latestTreasury = {
+    tenYear: treasuryData.length > 0 ? treasuryData[treasuryData.length - 1]["10Y"] : undefined,
+    twoYear: treasuryData.length > 0 ? treasuryData[treasuryData.length - 1]["2Y"] : undefined,
+    spread: treasuryData.length > 0 ? treasuryData[treasuryData.length - 1]["Spread"] : undefined,
+  };
 
   // Render each chart section
   return (
@@ -319,49 +283,63 @@ export default function UsMacro() {
             <p className="text-xl sm:text-2xl text-gray-300 mb-4 sm:mb-6">
               Monitoring the US Economy to help you make better investment decisions
             </p>
-            
+
             {/* Market Summary Dashboard */}
-            <DashboardSummary 
+            <DashboardSummary
               fedFundsRate={latestFedFundsRate}
-              pceLevelValue={latestPceValue} 
+              pceLevelValue={latestPceValue}
+              latestGdp={latestGdp}
+              latestUnemployment={latestUnemployment}
+              latestNonfarm={latestNonfarm}
+              latestCpi={latestCpiValue}
+              latestTreasury={latestTreasury}
             />
           </motion.div>
 
           {/* Federal Funds Rate Section - Moved to top as it's most relevant for investors */}
-          <FederalFundsChart 
-            data={federalfundsData} 
-            chartOptions={chartOptions} 
+          <FederalFundsChart
+            data={federalfundsData}
+            chartOptions={chartOptions}
+            analysisData={synthesisData?.federalfunds_analysis}
           />
 
           {/* Treasury Section */}
-          <TreasuryYieldChart 
-            data={treasuryData} 
-            chartOptions={chartOptions} 
+          <TreasuryYieldChart
+            data={treasuryData}
+            chartOptions={chartOptions}
+            analysisData={synthesisData?.treasury_analysis}
           />
 
           {/* Inflation Outlook Section */}
-          <InflationOutlookChart 
+          <InflationOutlookChart
             cpiData={cpiData}
             pceData={pceData}
             chartOptions={chartOptions}
+            cpiAnalysisData={synthesisData?.cpi_analysis}
+            pceAnalysisData={synthesisData?.pce_analysis}
           />
 
           {/* Labor Market Section */}
-          <LaborMarketChart 
+          <LaborMarketChart
             unemploymentData={unemploymentData}
             nonfarmData={nonfarmData}
             chartOptions={chartOptions}
             createChartData={createChartData}
+            unemploymentAnalysisData={synthesisData?.unemployment_analysis}
+            nonfarmAnalysisData={synthesisData?.nonfarm_analysis}
           />
 
           {/* GDP Section */}
-          <GdpGrowthChart 
+          <GdpGrowthChart
             data={gdpData}
             chartOptions={chartOptions}
+            analysisData={synthesisData?.gdp_analysis}
           />
 
           {/* Investment Strategy Summary Section */}
-          <InvestmentStrategySummary />
+          <InvestmentStrategySummary
+            overallSynthesis={synthesisData?.overall_synthesis}
+          />
         </div>
       </div>
     </main>

@@ -1,25 +1,23 @@
 import { Line } from "react-chartjs-2";
 import ChartSection from "./ChartSection";
-import { ChartOptions } from "./types";
+import { ChartOptions, CoreCpiData, PceData, AnalysisData } from "./types";
 import { TooltipItem } from "chart.js";
-
-interface CoreCpiData {
-  Monthly: string;
-  "Core CPI YoY (% change)": string;
-}
-
-interface PceData {
-  Monthly: string;
-  "Core PCE Level": string;
-}
 
 interface InflationOutlookChartProps {
   cpiData: CoreCpiData[];
   pceData: PceData[];
   chartOptions: ChartOptions;
+  cpiAnalysisData?: AnalysisData;
+  pceAnalysisData?: AnalysisData;
 }
 
-const InflationOutlookChart = ({ cpiData, pceData, chartOptions }: InflationOutlookChartProps) => {
+const InflationOutlookChart = ({ 
+  cpiData, 
+  pceData, 
+  chartOptions,
+  cpiAnalysisData,
+  pceAnalysisData
+}: InflationOutlookChartProps) => {
   return (
     <ChartSection
       title="Inflation Outlook"
@@ -75,14 +73,25 @@ const InflationOutlookChart = ({ cpiData, pceData, chartOptions }: InflationOutl
       }
       description={
         <p className="text-sm">
-          Core CPI and the Fed&apos;s preferred Core PCE both show inflation moderating but remaining above the Fed&apos;s 2% target.
+          {(cpiAnalysisData?.comment || pceAnalysisData?.comment) ? 
+            `${cpiAnalysisData?.comment || ""} ${pceAnalysisData?.comment || ""}` : 
+            "Core CPI and the Fed's preferred Core PCE both show inflation moderating but remaining above the Fed's 2% target."}
         </p>
       }
       investmentImplications={
         <div>
-          <p className="mb-2">Inflation is coming down but the last mile to 2% is proving difficult. This &quot;sticky&quot; inflation could limit how far the Fed can cut rates.</p>
-          <p className="mb-2">Moderating but persistent inflation creates a mixed environment - good for some real assets as inflation protection, but challenging for rate-sensitive growth stocks if it keeps rates higher than expected.</p>
-          <p>Companies with pricing power and low debt tend to outperform in this environment.</p>
+          {(cpiAnalysisData?.investment_implications || pceAnalysisData?.investment_implications) ? (
+            <>
+              {cpiAnalysisData?.investment_implications && <p className="mb-2">{cpiAnalysisData.investment_implications}</p>}
+              {pceAnalysisData?.investment_implications && <p>{pceAnalysisData.investment_implications}</p>}
+            </>
+          ) : (
+            <>
+              <p className="mb-2">Inflation is coming down but the last mile to 2% is proving difficult. This &quot;sticky&quot; inflation could limit how far the Fed can cut rates.</p>
+              <p className="mb-2">Moderating but persistent inflation creates a mixed environment - good for some real assets as inflation protection, but challenging for rate-sensitive growth stocks if it keeps rates higher than expected.</p>
+              <p>Companies with pricing power and low debt tend to outperform in this environment.</p>
+            </>
+          )}
         </div>
       }
       assetRecommendations={{

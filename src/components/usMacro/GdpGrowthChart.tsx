@@ -1,19 +1,14 @@
 import { Line } from "react-chartjs-2";
 import ChartSection from "./ChartSection";
-import { ChartOptions } from "./types";
-
-interface EconomicData {
-  date: string;
-  value: number;
-  realValue?: number;
-}
+import { ChartOptions, EconomicData, AnalysisData } from "./types";
 
 interface GdpGrowthChartProps {
   data: EconomicData[];
   chartOptions: ChartOptions;
+  analysisData?: AnalysisData;
 }
 
-const GdpGrowthChart = ({ data, chartOptions }: GdpGrowthChartProps) => {
+const GdpGrowthChart = ({ data, chartOptions, analysisData }: GdpGrowthChartProps) => {
   return (
     <ChartSection
       title="GDP Growth Trends"
@@ -51,14 +46,20 @@ const GdpGrowthChart = ({ data, chartOptions }: GdpGrowthChartProps) => {
       }
       description={
         <p className="text-sm">
-          Real GDP growth shows the economy&apos;s expansion after accounting for inflation. The gap between nominal and real GDP reflects inflation&apos;s impact.
+          {analysisData?.comment || "Real GDP growth shows the economy's expansion after accounting for inflation. The gap between nominal and real GDP reflects inflation's impact."}
         </p>
       }
       investmentImplications={
         <div>
-          <p className="mb-2">The economy has shown remarkable resilience, but growth is expected to slow as higher interest rates fully impact activity.</p>
-          <p className="mb-2">In a slowing but still positive growth environment, balance sheet strength and earnings visibility become increasingly important for equity selection.</p>
-          <p>International diversification may be beneficial if US growth slows more than global peers.</p>
+          {analysisData?.investment_implications ? (
+            <p>{analysisData.investment_implications}</p>
+          ) : (
+            <>
+              <p className="mb-2">The economy has shown remarkable resilience, but growth is expected to slow as higher interest rates fully impact activity.</p>
+              <p className="mb-2">In a slowing but still positive growth environment, balance sheet strength and earnings visibility become increasingly important for equity selection.</p>
+              <p>International diversification may be beneficial if US growth slows more than global peers.</p>
+            </>
+          )}
         </div>
       }
       assetRecommendations={{

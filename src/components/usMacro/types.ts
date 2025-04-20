@@ -24,7 +24,7 @@ export interface TreasuryData {
 }
 
 export interface ApiResponse<T> {
-  data: T[];
+  [key: string]: T | string | number | boolean | null | undefined;
 }
 
 export interface ChartOptions {
@@ -55,4 +55,31 @@ export interface ChartOptions {
       };
     };
   };
+}
+
+// Analysis data types for synthesis endpoint
+export interface AnalysisData {
+  comment: string;
+  investment_implications: string;
+}
+
+export interface OverallSynthesis {
+  market_outlook: string;
+  equity_strategy: string;
+  fixed_income_strategy: string;
+  commodities_outlook: string;
+  currency_outlook: string;
+  alternatives_strategy: string;
+  key_risks: string;
+}
+
+export interface SynthesisData {
+  gdp_analysis: AnalysisData;
+  pce_analysis: AnalysisData;
+  cpi_analysis: AnalysisData;
+  treasury_analysis: AnalysisData;
+  unemployment_analysis: AnalysisData;
+  nonfarm_analysis: AnalysisData;
+  federalfunds_analysis: AnalysisData;
+  overall_synthesis: OverallSynthesis;
 } 

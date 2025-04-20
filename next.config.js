@@ -5,16 +5,8 @@ const nextConfig = {
     unoptimized: true,
   },
   env: {
-    API_BASE_URL: 'https://green-heart-aaf5.zuoyou1998.workers.dev',
-  },
-  async rewrites() {
-    return [
-      {
-        source: '/api/:path*',
-        destination: 'https://green-heart-aaf5.zuoyou1998.workers.dev/:path*',
-      },
-    ];
-  },
+    API_BASE_URL: 'https://cool-lab-fe67.zuoyou1998.workers.dev',
+  }
 }
 
 module.exports = nextConfig 

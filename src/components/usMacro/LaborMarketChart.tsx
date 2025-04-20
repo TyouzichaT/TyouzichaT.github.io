@@ -1,25 +1,24 @@
 import { Line } from "react-chartjs-2";
 import ChartSection from "./ChartSection";
-import { ChartOptions } from "./types";
+import { ChartOptions, EconomicData, AnalysisData } from "./types";
 import { ChartData } from "chart.js";
-
-interface EconomicData {
-  date: string;
-  value: number;
-}
 
 interface LaborMarketChartProps {
   unemploymentData: EconomicData[];
   nonfarmData: EconomicData[];
   chartOptions: ChartOptions;
   createChartData: (data: EconomicData[], label: string, color: string) => ChartData<"line">;
+  unemploymentAnalysisData?: AnalysisData;
+  nonfarmAnalysisData?: AnalysisData;
 }
 
 const LaborMarketChart = ({ 
   unemploymentData, 
   nonfarmData, 
   chartOptions,
-  createChartData
+  createChartData,
+  unemploymentAnalysisData,
+  nonfarmAnalysisData
 }: LaborMarketChartProps) => {
   return (
     <ChartSection
@@ -63,14 +62,25 @@ const LaborMarketChart = ({
       }
       description={
         <p className="text-sm">
-          The labor market remains relatively strong but is showing signs of cooling, with the unemployment rate ticking up and job growth moderating.
+          {(unemploymentAnalysisData?.comment || nonfarmAnalysisData?.comment) ? 
+            `${unemploymentAnalysisData?.comment || ""} ${nonfarmAnalysisData?.comment || ""}` : 
+            "The labor market remains relatively strong but is showing signs of cooling, with the unemployment rate ticking up and job growth moderating."}
         </p>
       }
       investmentImplications={
         <div>
-          <p className="mb-2">The labor market is cooling gradually rather than collapsing, supporting a &quot;soft landing&quot; scenario where inflation moderates without severe economic damage.</p>
-          <p className="mb-2">A resilient but slowing job market typically favors quality companies with strong balance sheets that can weather slower growth.</p>
-          <p>Consumer spending will likely moderate but not collapse, suggesting a shift from discretionary to staples consumption.</p>
+          {(unemploymentAnalysisData?.investment_implications || nonfarmAnalysisData?.investment_implications) ? (
+            <>
+              {unemploymentAnalysisData?.investment_implications && <p className="mb-2">{unemploymentAnalysisData.investment_implications}</p>}
+              {nonfarmAnalysisData?.investment_implications && <p>{nonfarmAnalysisData.investment_implications}</p>}
+            </>
+          ) : (
+            <>
+              <p className="mb-2">The labor market is cooling gradually rather than collapsing, supporting a &quot;soft landing&quot; scenario where inflation moderates without severe economic damage.</p>
+              <p className="mb-2">A resilient but slowing job market typically favors quality companies with strong balance sheets that can weather slower growth.</p>
+              <p>Consumer spending will likely moderate but not collapse, suggesting a shift from discretionary to staples consumption.</p>
+            </>
+          )}
         </div>
       }
       assetRecommendations={{

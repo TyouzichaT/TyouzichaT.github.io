@@ -47,7 +47,7 @@ const ChartSection = ({
             <h3 className="text-xl font-semibold mb-3 text-purple-400">Investment Implications</h3>
             <div className="text-gray-200">{investmentImplications}</div>
             
-            {assetRecommendations && (
+            {/* {assetRecommendations && (
               <div className="mt-4">
                 <div className="mb-3">
                   <h4 className="text-lg font-medium text-green-400 mb-1">Favorable Assets</h4>
@@ -70,7 +70,7 @@ const ChartSection = ({
                   </div>
                 </div>
               </div>
-            )}
+            )} */}
           </motion.div>
         )}
       </div>

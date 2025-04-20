@@ -1,21 +1,15 @@
 import { Line } from "react-chartjs-2";
 import ChartSection from "./ChartSection";
-import { ChartOptions } from "./types";
+import { ChartOptions, TreasuryData, AnalysisData } from "./types";
 import { TooltipItem } from "chart.js";
-
-interface TreasuryData {
-  Date: string;
-  "10Y": string;
-  "2Y": string;
-  Spread: string;
-}
 
 interface TreasuryYieldChartProps {
   data: TreasuryData[];
   chartOptions: ChartOptions;
+  analysisData?: AnalysisData;
 }
 
-const TreasuryYieldChart = ({ data, chartOptions }: TreasuryYieldChartProps) => {
+const TreasuryYieldChart = ({ data, chartOptions, analysisData }: TreasuryYieldChartProps) => {
   return (
     <ChartSection
       title="Treasury Yield Curve & Bond Market"
@@ -77,14 +71,20 @@ const TreasuryYieldChart = ({ data, chartOptions }: TreasuryYieldChartProps) => 
       }
       description={
         <p className="text-sm">
-          The yield curve (especially the 10Y-2Y spread) is a powerful economic predictor. Inversion (negative spread) has historically preceded recessions.
+          {analysisData?.comment || "The yield curve (especially the 10Y-2Y spread) is a powerful economic predictor. Inversion (negative spread) has historically preceded recessions."}
         </p>
       }
       investmentImplications={
         <div>
-          <p className="mb-2">The yield curve has been deeply inverted, a classic recession signal, but is now normalizing as the market anticipates Fed rate cuts.</p>
-          <p className="mb-2">As the curve steepens from inversion toward normal, fixed income opportunities shift. Falling front-end yields benefit short-duration bonds first.</p>
-          <p>If the curve steepens due to inflation concerns, consider inflation-protected securities.</p>
+          {analysisData?.investment_implications ? (
+            <p>{analysisData.investment_implications}</p>
+          ) : (
+            <>
+              <p className="mb-2">The yield curve has been deeply inverted, a classic recession signal, but is now normalizing as the market anticipates Fed rate cuts.</p>
+              <p className="mb-2">As the curve steepens from inversion toward normal, fixed income opportunities shift. Falling front-end yields benefit short-duration bonds first.</p>
+              <p>If the curve steepens due to inflation concerns, consider inflation-protected securities.</p>
+            </>
+          )}
         </div>
       }
       assetRecommendations={{

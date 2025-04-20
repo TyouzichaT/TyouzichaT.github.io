@@ -1,22 +1,15 @@
 import { Line } from "react-chartjs-2";
 import ChartSection from "./ChartSection";
-import { ChartOptions } from "./types";
+import { EconomicData, ChartOptions, AnalysisData } from "./types";
 import { TooltipItem } from "chart.js";
-
-interface EconomicData {
-  date: string;
-  value: number;
-  realValue?: number;
-  federal_funds_rate_upper?: number;
-  federal_funds_rate_lower?: number;
-}
 
 interface FederalFundsChartProps {
   data: EconomicData[];
   chartOptions: ChartOptions;
+  analysisData?: AnalysisData;
 }
 
-const FederalFundsChart = ({ data, chartOptions }: FederalFundsChartProps) => {
+const FederalFundsChart = ({ data, chartOptions, analysisData }: FederalFundsChartProps) => {
   return (
     <ChartSection
       title="Federal Funds Rate & Monetary Policy"
@@ -100,14 +93,20 @@ const FederalFundsChart = ({ data, chartOptions }: FederalFundsChartProps) => {
       }
       description={
         <p className="text-sm">
-          The Federal Funds Rate directly impacts borrowing costs throughout the economy and is the Fed&apos;s primary tool for monetary policy.
+          {analysisData?.comment || "The Federal Funds Rate directly impacts borrowing costs throughout the economy and is the Fed's primary tool for monetary policy."}
         </p>
       }
       investmentImplications={
         <div>
-          <p className="mb-2">The Fed&apos;s hiking cycle appears to have ended, with markets now pricing in rate cuts. This transition from tightening to easing typically creates a shift in asset performance.</p>
-          <p className="mb-2">When the Fed begins cutting rates, it&apos;s often bullish for stocks initially, but the reason behind cuts matters. If cuts are preventative, markets may rally; if reacting to severe weakness, markets may struggle.</p>
-          <p>Falling rates typically benefit longer-duration assets that were pressured during the hiking cycle.</p>
+          {analysisData?.investment_implications ? (
+            <p>{analysisData.investment_implications}</p>
+          ) : (
+            <>
+              <p className="mb-2">The Fed&apos;s hiking cycle appears to have ended, with markets now pricing in rate cuts. This transition from tightening to easing typically creates a shift in asset performance.</p>
+              <p className="mb-2">When the Fed begins cutting rates, it&apos;s often bullish for stocks initially, but the reason behind cuts matters. If cuts are preventative, markets may rally; if reacting to severe weakness, markets may struggle.</p>
+              <p>Falling rates typically benefit longer-duration assets that were pressured during the hiking cycle.</p>
+            </>
+          )}
         </div>
       }
       assetRecommendations={{
