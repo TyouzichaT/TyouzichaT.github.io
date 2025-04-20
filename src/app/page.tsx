@@ -142,56 +142,6 @@ export default function Home() {
             </motion.div>
           </motion.section>
 
-          {/* Market Analysis Section */}
-          <motion.section
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="mb-8 sm:mb-16"
-          >
-            <h2 className="text-3xl sm:text-4xl font-semibold mb-4 sm:mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500">Market Analysis</h2>
-            <motion.div
-              whileHover={{ scale: 1.02 }}
-              className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-4 sm:p-8 shadow-lg border border-gray-700"
-            >
-              <div className="h-64 sm:h-96">
-                <Line
-                  data={marketData}
-                  options={{
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                      legend: {
-                        labels: {
-                          color: 'white'
-                        }
-                      }
-                    },
-                    scales: {
-                      y: {
-                        ticks: {
-                          color: 'white'
-                        },
-                        grid: {
-                          color: 'rgba(255, 255, 255, 0.1)'
-                        }
-                      },
-                      x: {
-                        ticks: {
-                          color: 'white'
-                        },
-                        grid: {
-                          color: 'rgba(255, 255, 255, 0.1)'
-                        }
-                      }
-                    }
-                  }}
-                />
-              </div>
-            </motion.div>
-          </motion.section>
-
           {/* Expertise Section */}
           <motion.section
             initial={{ opacity: 0, y: 20 }}
@@ -281,32 +231,16 @@ export default function Home() {
                 whileHover={{ scale: 1.02 }}
                 className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-4 sm:p-8 shadow-lg border border-gray-700"
               >
-                <h3 className="text-xl sm:text-2xl font-semibold mb-2 sm:mb-4">Financial Market Analysis</h3>
+                <h3 className="text-xl sm:text-2xl font-semibold mb-2 sm:mb-4">US Macro Analysis</h3>
                 <p className="text-gray-300 mb-4 sm:mb-6 text-base sm:text-lg">
-                  Advanced market analysis using machine learning to predict market trends and identify investment opportunities.
+                  Comprehensive analysis of US macroeconomic indicators and trends.
                 </p>
                 <motion.a
                   whileHover={{ x: 5 }}
-                  href="#"
+                  href="/usMacro"
                   className="text-blue-400 hover:text-blue-300 inline-flex items-center text-base sm:text-lg"
                 >
                   View Analysis →
-                </motion.a>
-              </motion.div>
-              <motion.div
-                whileHover={{ scale: 1.02 }}
-                className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-4 sm:p-8 shadow-lg border border-gray-700"
-              >
-                <h3 className="text-xl sm:text-2xl font-semibold mb-2 sm:mb-4">AI-Powered Trading System</h3>
-                <p className="text-gray-300 mb-4 sm:mb-6 text-base sm:text-lg">
-                  Development of an automated trading system using deep learning algorithms for market prediction.
-                </p>
-                <motion.a
-                  whileHover={{ x: 5 }}
-                  href="#"
-                  className="text-blue-400 hover:text-blue-300 inline-flex items-center text-base sm:text-lg"
-                >
-                  View Project →
                 </motion.a>
               </motion.div>
             </div>
@@ -367,44 +301,6 @@ export default function Home() {
                   Speaker at major fintech and AI conferences
                 </motion.li>
               </ul>
-            </motion.div>
-          </motion.section>
-
-          {/* Contact Section */}
-          <motion.section
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-          >
-            <h2 className="text-3xl sm:text-4xl font-semibold mb-4 sm:mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500">Get in Touch</h2>
-            <motion.div
-              whileHover={{ scale: 1.02 }}
-              className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-4 sm:p-8 shadow-lg border border-gray-700"
-            >
-              <p className="text-gray-300 mb-4 sm:mb-6 text-base sm:text-lg">
-                Interested in collaboration or discussing financial technology projects? Let&apos;s connect!
-              </p>
-              <div className="flex flex-wrap gap-3 sm:gap-4">
-                <motion.a
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  href="mailto:your.email@example.com"
-                  className="px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-colors text-base sm:text-lg"
-                >
-                  Send Email
-                </motion.a>
-                <motion.a
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  href="https://linkedin.com/in/yourusername"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-colors text-base sm:text-lg"
-                >
-                  Connect on LinkedIn
-                </motion.a>
-              </div>
             </motion.div>
           </motion.section>
         </div>
