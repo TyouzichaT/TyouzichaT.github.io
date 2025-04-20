@@ -16,8 +16,7 @@ const ChartSection = ({
   title, 
   chart, 
   description, 
-  investmentImplications,
-  assetRecommendations 
+  investmentImplications
 }: ChartSectionProps) => {
   return (
     <motion.section

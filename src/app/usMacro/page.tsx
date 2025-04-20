@@ -18,7 +18,6 @@ import {
   CoreCpiData,
   PceData,
   TreasuryData,
-  ApiResponse,
   ChartOptions,
   SynthesisData
 } from "../../components/usMacro/types";
