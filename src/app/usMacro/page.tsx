@@ -149,7 +149,7 @@ export default function UsMacro() {
               const API_BASE_URL = process.env.API_BASE_URL || 'https://green-heart-aaf5.zuoyou1998.workers.dev';
 
               // Try standard API endpoint format
-              const apiUrl = `${API_BASE_URL}/api/${type}`;
+              const apiUrl = `${API_BASE_URL}/?type=${type}`;
               console.log(`Fetching data from: ${apiUrl}`);
 
               const response = await fetch(apiUrl);
