@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Line, Bar } from "react-chartjs-2";
+import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -27,19 +27,6 @@ ChartJS.register(
 );
 
 export default function Home() {
-  const marketData = {
-    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-    datasets: [
-      {
-        label: "Market Performance",
-        data: [65, 59, 80, 81, 56, 90],
-        fill: false,
-        borderColor: "rgb(75, 192, 192)",
-        tension: 0.1,
-      },
-    ],
-  };
-
   const skillData = {
     labels: ["Financial Analysis", "Machine Learning", "Data Science", "Product Development", "Risk Management"],
     datasets: [

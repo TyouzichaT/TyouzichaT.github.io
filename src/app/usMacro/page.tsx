@@ -143,12 +143,12 @@ export default function UsMacro() {
         ];
 
         const promises = types.map(({ type, setter }) => {
-          const fetchAndProcessData = async <T,>() => {
+          const fetchAndProcessData = async () => {
             const response = await fetch(`/api/?type=${type}`);
             if (!response.ok) {
               throw new Error(`Failed to fetch ${type} data`);
             }
-            const result: ApiResponse<any> = await response.json();
+            const result: ApiResponse<unknown> = await response.json();
 
             if (type === 'gdp') {
               // Process GDP data to include both nominal and real values
@@ -160,20 +160,20 @@ export default function UsMacro() {
               }
 
               try {
-                const processedData: EconomicData[] = result.map((item: any) => {
+                const processedData: EconomicData[] = result.map((item: Record<string, unknown>) => {
                   // Safely extract values handling potential different formats
                   const quarter = typeof item.Quarter === 'string' ? item.Quarter : item["Quarter"];
                   const nominalGdp = typeof item["Nominal GDP (% change)"] === 'string' ?
-                    parseFloat(item["Nominal GDP (% change)"]) :
+                    parseFloat(item["Nominal GDP (% change)"] as string) :
                     (item["Nominal GDP (% change)"] || 0);
                   const realGdp = typeof item["Real GDP (% change)"] === 'string' ?
-                    parseFloat(item["Real GDP (% change)"]) :
+                    parseFloat(item["Real GDP (% change)"] as string) :
                     (item["Real GDP (% change)"] || 0);
 
                   return {
-                    date: quarter,
-                    value: nominalGdp,
-                    realValue: realGdp
+                    date: quarter as string,
+                    value: nominalGdp as number,
+                    realValue: realGdp as number
                   };
                 });
                 (setter as SetterFunction<EconomicData>)(processedData);
@@ -359,7 +359,7 @@ export default function UsMacro() {
               <>
                 <p className="text-sm">
                   Nonfarm payroll employment is a measure of the number of U.S. workers excluding farm workers and some other categories.
-                  It's a key indicator of economic health and job market strength.
+                  It&apos;s a key indicator of economic health and job market strength.
                 </p>
                 <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
@@ -542,7 +542,7 @@ export default function UsMacro() {
             }
             description={
               <p className="text-sm">
-                The Core PCE Price Index is the Federal Reserve's preferred measure of inflation.
+                The Core PCE Price Index is the Federal Reserve&apos;s preferred measure of inflation.
                 It excludes volatile food and energy prices to better reflect underlying inflation trends.
               </p>
             }
