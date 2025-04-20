@@ -1,5 +1,7 @@
 import { Line } from "react-chartjs-2";
 import ChartSection from "./ChartSection";
+import { ChartOptions } from "./types";
+import { TooltipItem } from "chart.js";
 
 interface EconomicData {
   date: string;
@@ -11,7 +13,7 @@ interface EconomicData {
 
 interface FederalFundsChartProps {
   data: EconomicData[];
-  chartOptions: any;
+  chartOptions: ChartOptions;
 }
 
 const FederalFundsChart = ({ data, chartOptions }: FederalFundsChartProps) => {
@@ -60,7 +62,7 @@ const FederalFundsChart = ({ data, chartOptions }: FederalFundsChartProps) => {
                 ...chartOptions.plugins,
                 tooltip: {
                   callbacks: {
-                    label: function (context: any) {
+                    label: function (context: TooltipItem<"line">) {
                       const datasetLabel = context.dataset.label;
                       if (datasetLabel === "Target Range") {
                         return "";
@@ -68,10 +70,10 @@ const FederalFundsChart = ({ data, chartOptions }: FederalFundsChartProps) => {
                       const value = context.parsed.y;
                       return `${datasetLabel}: ${value !== null && value !== undefined ? value.toFixed(2) : 'N/A'}%`;
                     },
-                    title: function (context: any) {
+                    title: function (context: TooltipItem<"line">[]) {
                       return context[0].label;
                     },
-                    footer: function (tooltipItems: any) {
+                    footer: function (tooltipItems: TooltipItem<"line">[]) {
                       const idx = tooltipItems[0].dataIndex;
                       const upper = data[idx]?.federal_funds_rate_upper ?? 0;
                       const lower = data[idx]?.federal_funds_rate_lower ?? 0;
@@ -98,13 +100,13 @@ const FederalFundsChart = ({ data, chartOptions }: FederalFundsChartProps) => {
       }
       description={
         <p className="text-sm">
-          The Federal Funds Rate directly impacts borrowing costs throughout the economy and is the Fed's primary tool for monetary policy.
+          The Federal Funds Rate directly impacts borrowing costs throughout the economy and is the Fed&apos;s primary tool for monetary policy.
         </p>
       }
       investmentImplications={
         <div>
-          <p className="mb-2">The Fed's hiking cycle appears to have ended, with markets now pricing in rate cuts. This transition from tightening to easing typically creates a shift in asset performance.</p>
-          <p className="mb-2">When the Fed begins cutting rates, it's often bullish for stocks initially, but the reason behind cuts matters. If cuts are preventative, markets may rally; if reacting to severe weakness, markets may struggle.</p>
+          <p className="mb-2">The Fed&apos;s hiking cycle appears to have ended, with markets now pricing in rate cuts. This transition from tightening to easing typically creates a shift in asset performance.</p>
+          <p className="mb-2">When the Fed begins cutting rates, it&apos;s often bullish for stocks initially, but the reason behind cuts matters. If cuts are preventative, markets may rally; if reacting to severe weakness, markets may struggle.</p>
           <p>Falling rates typically benefit longer-duration assets that were pressured during the hiking cycle.</p>
         </div>
       }

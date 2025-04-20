@@ -1,5 +1,6 @@
 import { Line } from "react-chartjs-2";
 import ChartSection from "./ChartSection";
+import { ChartOptions } from "./types";
 
 interface EconomicData {
   date: string;
@@ -9,7 +10,7 @@ interface EconomicData {
 
 interface GdpGrowthChartProps {
   data: EconomicData[];
-  chartOptions: any;
+  chartOptions: ChartOptions;
 }
 
 const GdpGrowthChart = ({ data, chartOptions }: GdpGrowthChartProps) => {
@@ -50,7 +51,7 @@ const GdpGrowthChart = ({ data, chartOptions }: GdpGrowthChartProps) => {
       }
       description={
         <p className="text-sm">
-          Real GDP growth shows the economy's expansion after accounting for inflation. The gap between nominal and real GDP reflects inflation's impact.
+          Real GDP growth shows the economy&apos;s expansion after accounting for inflation. The gap between nominal and real GDP reflects inflation&apos;s impact.
         </p>
       }
       investmentImplications={

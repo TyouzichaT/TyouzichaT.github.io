@@ -1,5 +1,7 @@
 import { Line } from "react-chartjs-2";
 import ChartSection from "./ChartSection";
+import { ChartOptions } from "./types";
+import { TooltipItem } from "chart.js";
 
 interface TreasuryData {
   Date: string;
@@ -10,7 +12,7 @@ interface TreasuryData {
 
 interface TreasuryYieldChartProps {
   data: TreasuryData[];
-  chartOptions: any;
+  chartOptions: ChartOptions;
 }
 
 const TreasuryYieldChart = ({ data, chartOptions }: TreasuryYieldChartProps) => {
@@ -52,7 +54,7 @@ const TreasuryYieldChart = ({ data, chartOptions }: TreasuryYieldChartProps) => 
                 ...chartOptions.plugins,
                 tooltip: {
                   callbacks: {
-                    label: function (context: any) {
+                    label: function (context: TooltipItem<"line">) {
                       return `${context.dataset.label}: ${context.parsed.y.toFixed(2)}%`;
                     }
                   }
