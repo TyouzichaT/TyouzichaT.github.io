@@ -144,77 +144,109 @@ export default function UsMacro() {
 
         const promises = types.map(({ type, setter }) => {
           const fetchAndProcessData = async () => {
-            const response = await fetch(`/api/?type=${type}`);
-            if (!response.ok) {
-              throw new Error(`Failed to fetch ${type} data`);
-            }
-            const result: ApiResponse<unknown> = await response.json();
+            try {
+              // Use API_BASE_URL for both environments
+              const API_BASE_URL = process.env.API_BASE_URL || 'https://green-heart-aaf5.zuoyou1998.workers.dev';
 
-            if (type === 'gdp') {
-              // Process GDP data to include both nominal and real values
-              if (!result || !Array.isArray(result)) {
-                console.error(`Invalid GDP data format received:`, result);
-                // Set empty array to avoid rendering errors
-                (setter as SetterFunction<EconomicData>)([]);
-                return;
+              // Try standard API endpoint format
+              const apiUrl = `${API_BASE_URL}/api/${type}`;
+              console.log(`Fetching data from: ${apiUrl}`);
+
+              const response = await fetch(apiUrl);
+
+              if (!response.ok) {
+                console.error(`API error: ${response.status} ${response.statusText}`);
+                throw new Error(`Failed to fetch ${type} data: ${response.status} ${response.statusText}`);
               }
 
-              try {
-                const processedData: EconomicData[] = result.map((item: Record<string, unknown>) => {
-                  // Safely extract values handling potential different formats
-                  const quarter = typeof item.Quarter === 'string' ? item.Quarter : item["Quarter"];
-                  const nominalGdp = typeof item["Nominal GDP (% change)"] === 'string' ?
-                    parseFloat(item["Nominal GDP (% change)"] as string) :
-                    (item["Nominal GDP (% change)"] || 0);
-                  const realGdp = typeof item["Real GDP (% change)"] === 'string' ?
-                    parseFloat(item["Real GDP (% change)"] as string) :
-                    (item["Real GDP (% change)"] || 0);
+              const result: ApiResponse<unknown> = await response.json();
 
-                  return {
-                    date: quarter as string,
-                    value: nominalGdp as number,
-                    realValue: realGdp as number
-                  };
-                });
-                (setter as SetterFunction<EconomicData>)(processedData);
-              } catch (mapError) {
-                console.error(`Error processing GDP data:`, mapError);
-                // Set empty array to avoid rendering errors
-                (setter as SetterFunction<EconomicData>)([]);
-              }
-            } else if (type === 'treasury') {
-              // Process Treasury data
-              if (!result || !Array.isArray(result)) {
-                console.error(`Invalid treasury data format received:`, result);
-                (setter as SetterFunction<TreasuryData>)([]);
-                return;
-              }
-              (setter as SetterFunction<TreasuryData>)(result);
-            } else {
-              // Handle all other data types
-              if (!result || !Array.isArray(result)) {
-                console.error(`Invalid ${type} data format received:`, result);
-                if (type === 'pce') {
-                  (setter as SetterFunction<PceData>)([]);
-                } else if (type === 'cpi') {
-                  (setter as SetterFunction<CoreCpiData>)([]);
-                } else {
+              if (type === 'gdp') {
+                // Process GDP data to include both nominal and real values
+                if (!result || !Array.isArray(result)) {
+                  console.error(`Invalid GDP data format received:`, result);
+                  // Set empty array to avoid rendering errors
+                  (setter as SetterFunction<EconomicData>)([]);
+                  return;
+                }
+
+                try {
+                  const processedData: EconomicData[] = result.map((item: Record<string, unknown>) => {
+                    // Safely extract values handling potential different formats
+                    const quarter = typeof item.Quarter === 'string' ? item.Quarter : item["Quarter"];
+                    const nominalGdp = typeof item["Nominal GDP (% change)"] === 'string' ?
+                      parseFloat(item["Nominal GDP (% change)"] as string) :
+                      (item["Nominal GDP (% change)"] || 0);
+                    const realGdp = typeof item["Real GDP (% change)"] === 'string' ?
+                      parseFloat(item["Real GDP (% change)"] as string) :
+                      (item["Real GDP (% change)"] || 0);
+
+                    return {
+                      date: quarter as string,
+                      value: nominalGdp as number,
+                      realValue: realGdp as number
+                    };
+                  });
+                  (setter as SetterFunction<EconomicData>)(processedData);
+                } catch (mapError) {
+                  console.error(`Error processing GDP data:`, mapError);
+                  // Set empty array to avoid rendering errors
                   (setter as SetterFunction<EconomicData>)([]);
                 }
-                return;
+              } else if (type === 'treasury') {
+                // Process Treasury data
+                if (!result || !Array.isArray(result)) {
+                  console.error(`Invalid treasury data format received:`, result);
+                  (setter as SetterFunction<TreasuryData>)([]);
+                  return;
+                }
+                (setter as SetterFunction<TreasuryData>)(result);
+              } else {
+                // Handle all other data types
+                if (!result || !Array.isArray(result)) {
+                  console.error(`Invalid ${type} data format received:`, result);
+                  if (type === 'pce') {
+                    (setter as SetterFunction<PceData>)([]);
+                  } else if (type === 'cpi') {
+                    (setter as SetterFunction<CoreCpiData>)([]);
+                  } else {
+                    (setter as SetterFunction<EconomicData>)([]);
+                  }
+                  return;
+                }
+
+                // Process data according to its type
+                if (type === 'pce') {
+                  const processedData: PceData[] = result;
+                  (setter as SetterFunction<PceData>)(processedData);
+                } else if (type === 'cpi') {
+                  const processedData: CoreCpiData[] = result;
+                  (setter as SetterFunction<CoreCpiData>)(processedData);
+                } else {
+                  const processedData: EconomicData[] = result;
+                  (setter as SetterFunction<EconomicData>)(processedData);
+                }
+              }
+            } catch (err) {
+              console.error(`Error fetching ${type}:`, err);
+              // Set empty array to prevent charts from breaking
+              if (type === 'gdp') {
+                (setter as SetterFunction<EconomicData>)([]);
+              } else if (type === 'pce') {
+                (setter as SetterFunction<PceData>)([]);
+              }
+              else if (type === 'treasury') {
+                (setter as SetterFunction<TreasuryData>)([]);
+              }
+              else if (type === 'cpi') {
+                (setter as SetterFunction<CoreCpiData>)([]);
+              }
+              else {
+                (setter as SetterFunction<EconomicData>)([]);
               }
 
-              // Process data according to its type
-              if (type === 'pce') {
-                const processedData: PceData[] = result;
-                (setter as SetterFunction<PceData>)(processedData);
-              } else if (type === 'cpi') {
-                const processedData: CoreCpiData[] = result;
-                (setter as SetterFunction<CoreCpiData>)(processedData);
-              } else {
-                const processedData: EconomicData[] = result;
-                (setter as SetterFunction<EconomicData>)(processedData);
-              }
+              // Don't rethrow, handle locally to prevent Promise.all from failing completely
+              return null;
             }
           };
 
