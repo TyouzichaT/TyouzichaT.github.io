@@ -1,7 +1,6 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -13,7 +12,22 @@ import {
   Legend,
   Filler,
 } from "chart.js";
-import { useEffect, useState, ReactNode } from "react";
+import { useEffect, useState } from "react";
+import { 
+  EconomicData, 
+  CoreCpiData, 
+  PceData, 
+  TreasuryData, 
+  ApiResponse,
+  ChartOptions 
+} from "../../components/usMacro/types";
+import DashboardSummary from "../../components/usMacro/DashboardSummary";
+import FederalFundsChart from "../../components/usMacro/FederalFundsChart";
+import TreasuryYieldChart from "../../components/usMacro/TreasuryYieldChart";
+import InflationOutlookChart from "../../components/usMacro/InflationOutlookChart";
+import LaborMarketChart from "../../components/usMacro/LaborMarketChart";
+import GdpGrowthChart from "../../components/usMacro/GdpGrowthChart";
+import InvestmentStrategySummary from "../../components/usMacro/InvestmentStrategySummary";
 
 ChartJS.register(
   CategoryScale,
@@ -26,37 +40,8 @@ ChartJS.register(
   Filler
 );
 
-interface EconomicData {
-  date: string;
-  value: number;
-  realValue?: number;
-  federal_funds_rate_upper?: number;
-  federal_funds_rate_lower?: number;
-}
-
-interface CoreCpiData {
-  Monthly: string;
-  "Core CPI YoY (% change)": string;
-}
-
-interface PceData {
-  Monthly: string;
-  "Core PCE Level": string;
-}
-
-interface TreasuryData {
-  Date: string;
-  "10Y": string;
-  "2Y": string;
-  Spread: string;
-}
-
-interface ApiResponse<T> {
-  data: T[];
-}
-
 // Standard chart options used across all charts
-const chartOptions = {
+const chartOptions: ChartOptions = {
   responsive: true,
   maintainAspectRatio: false,
   plugins: {
@@ -84,36 +69,6 @@ const chartOptions = {
       },
     },
   },
-};
-
-// Reusable chart section component
-interface ChartSectionProps {
-  title: string;
-  chart: ReactNode;
-  description?: ReactNode;
-}
-
-const ChartSection = ({ title, chart, description }: ChartSectionProps) => {
-  return (
-    <motion.section
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8 }}
-      viewport={{ once: true }}
-      className="mb-8 sm:mb-16"
-    >
-      <h2 className="text-3xl sm:text-4xl font-semibold mb-4 sm:mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500">
-        {title}
-      </h2>
-      <motion.div
-        whileHover={{ scale: 1.02 }}
-        className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-4 sm:p-8 shadow-lg border border-gray-700"
-      >
-        {chart}
-        {description && <div className="mt-4 text-gray-300">{description}</div>}
-      </motion.div>
-    </motion.section>
-  );
 };
 
 export default function UsMacro() {
@@ -302,10 +257,13 @@ export default function UsMacro() {
   // Loading state
   if (loading) {
     return (
-      <main className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
-          <p className="mt-4 text-xl">Loading data...</p>
+      <main className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white flex items-center justify-center p-4">
+        <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl shadow-xl p-8 max-w-md w-full border border-gray-700">
+          <div className="flex flex-col items-center">
+            <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500 mb-6"></div>
+            <h2 className="text-2xl font-semibold mb-2">Loading Dashboard</h2>
+            <p className="text-gray-400 text-center">Fetching latest economic data and market indicators...</p>
+          </div>
         </div>
       </main>
     );
@@ -314,19 +272,41 @@ export default function UsMacro() {
   // Error state
   if (error) {
     return (
-      <main className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-red-500 text-xl">Error: {error}</p>
+      <main className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white flex items-center justify-center p-4">
+        <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl shadow-xl p-8 max-w-md w-full border border-red-700/50">
+          <div className="flex flex-col items-center">
+            <div className="flex items-center justify-center h-16 w-16 rounded-full bg-red-500/10 mb-6">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+            </div>
+            <h2 className="text-2xl font-semibold mb-2 text-red-400">Unable to Load Data</h2>
+            <p className="text-gray-400 text-center mb-4">{error}</p>
+            <button 
+              onClick={() => window.location.reload()} 
+              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-md transition-colors text-white font-medium"
+            >
+              Try Again
+            </button>
+          </div>
         </div>
       </main>
     );
   }
 
+  // Extract latest Fed Funds Rate and PCE values for the dashboard
+  const latestFedFundsRate = {
+    lower: federalfundsData.length > 0 ? federalfundsData[0].federal_funds_rate_lower : undefined,
+    upper: federalfundsData.length > 0 ? federalfundsData[0].federal_funds_rate_upper : undefined
+  };
+  
+  const latestPceValue = pceData.length > 0 ? parseFloat(pceData[0]["Core PCE Level"]) : undefined;
+
   // Render each chart section
   return (
     <main className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white">
       <div className="container mx-auto px-4 sm:px-6 py-8 sm:py-16">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -334,472 +314,54 @@ export default function UsMacro() {
             className="text-center mb-8 sm:mb-16"
           >
             <h1 className="text-4xl sm:text-6xl font-bold mb-2 sm:mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500">
-              US Macroeconomic Analysis
+              US Macroeconomic Dashboard
             </h1>
             <p className="text-xl sm:text-2xl text-gray-300 mb-4 sm:mb-6">
-              Key Economic Indicators and Trends
+              Monitoring the US Economy to help you make better investment decisions
             </p>
+            
+            {/* Market Summary Dashboard */}
+            <DashboardSummary 
+              fedFundsRate={latestFedFundsRate}
+              pceLevelValue={latestPceValue} 
+            />
           </motion.div>
 
-          {/* Nonfarm Payroll Section */}
-          <ChartSection
-            title="Nonfarm Payroll"
-            chart={
-              <div className="h-64 sm:h-96">
-                <Line
-                  data={{
-                    labels: nonfarmData.map((item) => item.date),
-                    datasets: [
-                      {
-                        label: "Total Nonfarm Payroll (thousands)",
-                        data: nonfarmData.map((item) => item.value),
-                        fill: false,
-                        borderColor: "rgb(75, 192, 192)",
-                        tension: 0.1,
-                      },
-                    ],
-                  }}
-                  options={{
-                    ...chartOptions,
-                    plugins: {
-                      ...chartOptions.plugins,
-                      tooltip: {
-                        callbacks: {
-                          label: function (context) {
-                            const value = context.parsed.y;
-                            return `Payrolls: ${value.toLocaleString()} thousand`;
-                          }
-                        }
-                      }
-                    },
-                    scales: {
-                      ...chartOptions.scales,
-                      y: {
-                        ...chartOptions.scales.y,
-                        title: {
-                          display: true,
-                          text: 'Nonfarm Payrolls (thousands)',
-                          color: 'white'
-                        }
-                      }
-                    }
-                  }}
-                />
-              </div>
-            }
-            description={
-              <>
-                <p className="text-sm">
-                  Nonfarm payroll employment is a measure of the number of U.S. workers excluding farm workers and some other categories.
-                  It&apos;s a key indicator of economic health and job market strength.
-                </p>
-                <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <h3 className="text-lg font-semibold text-blue-400">Key Trends:</h3>
-                    <ul className="text-sm list-disc list-inside">
-                      <li>Pandemic Impact: Loss of 21.9M jobs (Feb-Apr 2020)</li>
-                      <li>Recovery to Pre-Pandemic Level: Feb 2022</li>
-                      <li>Current: 9.3% above pre-pandemic peak</li>
-                      <li>Continued Growth: Moderating but positive</li>
-                    </ul>
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-purple-400">Monthly Changes:</h3>
-                    <div className="grid grid-cols-2 gap-2 text-xs">
-                      <div>
-                        <span className="text-red-400 font-bold">Largest Loss:</span>
-                        <p>Apr 2020: -20.5M jobs</p>
-                      </div>
-                      <div>
-                        <span className="text-green-400 font-bold">Largest Gain:</span>
-                        <p>Jun 2020: +4.6M jobs</p>
-                      </div>
-                      <div>
-                        <span className="text-blue-400 font-bold">Recent Average:</span>
-                        <p>2024: ~150K jobs/month</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </>
-            }
-          />
-
-          {/* GDP Section */}
-          <ChartSection
-            title="GDP Growth"
-            chart={
-              gdpData && gdpData.length > 0 ? (
-                <div className="h-64 sm:h-96">
-                  <Line
-                    data={{
-                      labels: gdpData.map((item) => item.date),
-                      datasets: [
-                        {
-                          label: "Nominal GDP Growth",
-                          data: gdpData.map((item) => item.value),
-                          fill: false,
-                          borderColor: "rgb(255, 99, 132)",
-                          tension: 0.1,
-                        },
-                        {
-                          label: "Real GDP Growth",
-                          data: gdpData.map((item) => item.realValue),
-                          fill: false,
-                          borderColor: "rgb(54, 162, 235)",
-                          tension: 0.1,
-                        },
-                      ],
-                    }}
-                    options={chartOptions}
-                  />
-                </div>
-              ) : (
-                <div className="h-64 sm:h-96 flex items-center justify-center">
-                  <p className="text-gray-400">GDP data unavailable</p>
-                </div>
-              )
-            }
-          />
-
-          {/* CPI Section */}
-          <ChartSection
-            title="Core Consumer Price Index (CPI)"
-            chart={
-              cpiData && cpiData.length > 0 ? (
-                <div className="h-64 sm:h-96">
-                  <Line
-                    data={{
-                      labels: cpiData.map((item) => item.Monthly),
-                      datasets: [
-                        {
-                          label: "Core CPI YoY (% change)",
-                          data: cpiData.map((item) => parseFloat(item["Core CPI YoY (% change)"])),
-                          fill: false,
-                          borderColor: "rgb(54, 162, 235)",
-                          tension: 0.1,
-                        },
-                      ],
-                    }}
-                    options={{
-                      ...chartOptions,
-                      plugins: {
-                        ...chartOptions.plugins,
-                        tooltip: {
-                          callbacks: {
-                            label: function (context) {
-                              return `Core CPI YoY: ${context.parsed.y.toFixed(2)}%`;
-                            }
-                          }
-                        }
-                      },
-                      scales: {
-                        ...chartOptions.scales,
-                        y: {
-                          ...chartOptions.scales.y,
-                          title: {
-                            display: true,
-                            text: 'Year-over-Year Change (%)',
-                            color: 'white'
-                          }
-                        }
-                      }
-                    }}
-                  />
-                </div>
-              ) : (
-                <div className="h-64 sm:h-96 flex items-center justify-center">
-                  <p className="text-gray-400">CPI data unavailable</p>
-                </div>
-              )
-            }
-            description={
-              <p className="text-sm">
-                Core CPI (Consumer Price Index) measures the change in prices of goods and services excluding food and energy.
-                The year-over-year change shows the inflation rate compared to the same month in the previous year.
-              </p>
-            }
-          />
-
-          {/* PCE Section */}
-          <ChartSection
-            title="Core PCE Price Index"
-            chart={
-              pceData && pceData.length > 0 ? (
-                <div className="h-64 sm:h-96">
-                  <Line
-                    data={{
-                      labels: pceData.map((item) => item.Monthly),
-                      datasets: [
-                        {
-                          label: "Core PCE Level",
-                          data: pceData.map((item) => parseFloat(item["Core PCE Level"])),
-                          fill: false,
-                          borderColor: "rgb(255, 159, 64)",
-                          tension: 0.1,
-                        },
-                      ],
-                    }}
-                    options={{
-                      ...chartOptions,
-                      plugins: {
-                        ...chartOptions.plugins,
-                        tooltip: {
-                          callbacks: {
-                            label: function (context) {
-                              return `Core PCE: ${context.parsed.y.toFixed(2)}`;
-                            }
-                          }
-                        }
-                      },
-                      scales: {
-                        ...chartOptions.scales,
-                        y: {
-                          ...chartOptions.scales.y,
-                          title: {
-                            display: true,
-                            text: 'Index Level',
-                            color: 'white'
-                          }
-                        }
-                      }
-                    }}
-                  />
-                </div>
-              ) : (
-                <div className="h-64 sm:h-96 flex items-center justify-center">
-                  <p className="text-gray-400">PCE data unavailable</p>
-                </div>
-              )
-            }
-            description={
-              <p className="text-sm">
-                The Core PCE Price Index is the Federal Reserve&apos;s preferred measure of inflation.
-                It excludes volatile food and energy prices to better reflect underlying inflation trends.
-              </p>
-            }
+          {/* Federal Funds Rate Section - Moved to top as it's most relevant for investors */}
+          <FederalFundsChart 
+            data={federalfundsData} 
+            chartOptions={chartOptions} 
           />
 
           {/* Treasury Section */}
-          <ChartSection
-            title="Treasury Yield Curve"
-            chart={
-              <div className="h-64 sm:h-96">
-                <Line
-                  data={{
-                    labels: treasuryData.map((item) => item.Date),
-                    datasets: [
-                      {
-                        label: "10-Year Yield",
-                        data: treasuryData.map((item) => parseFloat(item["10Y"])),
-                        fill: false,
-                        borderColor: "rgb(75, 192, 192)",
-                        tension: 0.1,
-                      },
-                      {
-                        label: "2-Year Yield",
-                        data: treasuryData.map((item) => parseFloat(item["2Y"])),
-                        fill: false,
-                        borderColor: "rgb(255, 99, 132)",
-                        tension: 0.1,
-                      },
-                      {
-                        label: "Spread (10Y-2Y)",
-                        data: treasuryData.map((item) => parseFloat(item.Spread)),
-                        fill: false,
-                        borderColor: "rgb(153, 102, 255)",
-                        tension: 0.1,
-                      },
-                    ],
-                  }}
-                  options={{
-                    ...chartOptions,
-                    plugins: {
-                      ...chartOptions.plugins,
-                      tooltip: {
-                        callbacks: {
-                          label: function (context) {
-                            return `${context.dataset.label}: ${context.parsed.y.toFixed(2)}%`;
-                          }
-                        }
-                      }
-                    },
-                    scales: {
-                      ...chartOptions.scales,
-                      y: {
-                        ...chartOptions.scales.y,
-                        title: {
-                          display: true,
-                          text: 'Yield (%)',
-                          color: 'white'
-                        }
-                      }
-                    }
-                  }}
-                />
-              </div>
-            }
-            description={
-              <p className="text-sm">
-                The Treasury yield curve shows the relationship between yields on Treasury securities of different maturities.
-                The spread between 10-year and 2-year yields is a key indicator of economic expectations.
-                A negative spread (inverted yield curve) often precedes economic slowdowns.
-              </p>
-            }
+          <TreasuryYieldChart 
+            data={treasuryData} 
+            chartOptions={chartOptions} 
           />
 
-          {/* Unemployment Section */}
-          <ChartSection
-            title="Unemployment Rate"
-            chart={
-              <div className="h-64 sm:h-96">
-                <Line
-                  data={createChartData(unemploymentData, "Unemployment Rate", "rgb(153, 102, 255)")}
-                  options={{
-                    ...chartOptions,
-                    plugins: {
-                      ...chartOptions.plugins,
-                      tooltip: {
-                        callbacks: {
-                          label: function (context) {
-                            return `Unemployment Rate: ${context.parsed.y.toFixed(1)}%`;
-                          }
-                        }
-                      }
-                    },
-                    scales: {
-                      ...chartOptions.scales,
-                      y: {
-                        ...chartOptions.scales.y,
-                        title: {
-                          display: true,
-                          text: 'Unemployment Rate (%)',
-                          color: 'white'
-                        },
-                        min: 0,
-                        max: 16
-                      }
-                    }
-                  }}
-                />
-              </div>
-            }
-            description={
-              <>
-                <p className="text-sm">
-                  The unemployment rate shows the percentage of the labor force that is jobless and actively seeking employment.
-                  The data reveals a dramatic pandemic spike followed by a strong recovery, with current levels remaining historically low.
-                </p>
-                <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <h3 className="text-lg font-semibold text-blue-400">Key Periods:</h3>
-                    <ul className="text-sm list-disc list-inside">
-                      <li>Pre-Pandemic: 3.5-3.6% (Jan-Feb 2020)</li>
-                      <li>Pandemic Peak: 14.8% (Apr 2020)</li>
-                      <li>Recovery: 14.8% → 3.9% (Apr 2020 - Dec 2021)</li>
-                      <li>Current: 4.1-4.2% (2024-2025)</li>
-                    </ul>
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-purple-400">Market Implications:</h3>
-                    <ul className="text-sm list-disc list-inside">
-                      <li>Strong labor market recovery</li>
-                      <li>Current levels remain healthy</li>
-                      <li>Gradual cooling in 2024-2025</li>
-                    </ul>
-                  </div>
-                </div>
-              </>
-            }
+          {/* Inflation Outlook Section */}
+          <InflationOutlookChart 
+            cpiData={cpiData}
+            pceData={pceData}
+            chartOptions={chartOptions}
           />
 
-          {/* Federal Funds Rate Section */}
-          <ChartSection
-            title="Federal Funds Rate"
-            chart={
-              <div className="h-64 sm:h-96">
-                <Line
-                  data={{
-                    labels: federalfundsData.map((item) => item.date),
-                    datasets: [
-                      {
-                        label: "Upper Bound",
-                        data: federalfundsData.map((item) => item.federal_funds_rate_upper),
-                        borderColor: "rgb(255, 99, 132)",
-                        borderWidth: 2,
-                        pointRadius: 0,
-                        tension: 0.1,
-                      },
-                      {
-                        label: "Lower Bound",
-                        data: federalfundsData.map((item) => item.federal_funds_rate_lower || 0),
-                        borderColor: "rgb(54, 162, 235)",
-                        borderWidth: 2,
-                        pointRadius: 0,
-                        tension: 0.1,
-                      },
-                      {
-                        label: "Target Range",
-                        data: federalfundsData.map((item) => item.federal_funds_rate_upper),
-                        borderColor: "rgba(0, 0, 0, 0)",
-                        backgroundColor: "rgba(255, 99, 132, 0.2)",
-                        fill: {
-                          target: "+1",
-                          above: "rgba(255, 99, 132, 0.2)",
-                        },
-                        tension: 0.1,
-                        pointRadius: 0,
-                      },
-                    ],
-                  }}
-                  options={{
-                    ...chartOptions,
-                    plugins: {
-                      ...chartOptions.plugins,
-                      tooltip: {
-                        callbacks: {
-                          label: function (context) {
-                            const datasetLabel = context.dataset.label;
-                            if (datasetLabel === "Target Range") {
-                              return "";
-                            }
-                            const value = context.parsed.y;
-                            return `${datasetLabel}: ${value !== null && value !== undefined ? value.toFixed(2) : 'N/A'}%`;
-                          },
-                          title: function (context) {
-                            return context[0].label;
-                          },
-                          footer: function (tooltipItems) {
-                            const idx = tooltipItems[0].dataIndex;
-                            const upper = federalfundsData[idx]?.federal_funds_rate_upper ?? 0;
-                            const lower = federalfundsData[idx]?.federal_funds_rate_lower ?? 0;
-                            return `Target Range: ${lower.toFixed(2)}% - ${upper.toFixed(2)}%`;
-                          }
-                        }
-                      }
-                    },
-                    scales: {
-                      ...chartOptions.scales,
-                      y: {
-                        ...chartOptions.scales.y,
-                        title: {
-                          display: true,
-                          text: 'Rate (%)',
-                          color: 'white'
-                        },
-                        min: 0
-                      }
-                    }
-                  }}
-                />
-              </div>
-            }
-            description={
-              <p className="text-sm">
-                The Federal Funds Rate is the target interest rate set by the Federal Reserve at which commercial banks borrow and lend their excess reserves to each other overnight. Since 2008, the Fed has used a target range with upper and lower bounds rather than a single target rate. The shaded area represents this target range.
-              </p>
-            }
+          {/* Labor Market Section */}
+          <LaborMarketChart 
+            unemploymentData={unemploymentData}
+            nonfarmData={nonfarmData}
+            chartOptions={chartOptions}
+            createChartData={createChartData}
           />
+
+          {/* GDP Section */}
+          <GdpGrowthChart 
+            data={gdpData}
+            chartOptions={chartOptions}
+          />
+
+          {/* Investment Strategy Summary Section */}
+          <InvestmentStrategySummary />
         </div>
       </div>
     </main>
