@@ -34,25 +34,67 @@ export interface ChartOptions {
     legend: {
       labels: {
         color: string;
+        font?: {
+          family?: string;
+          size?: number;
+          weight?: 'normal' | 'bold' | 'lighter' | 'bolder' | number;
+        };
+        usePointStyle?: boolean;
+        pointStyle?: string;
       };
     };
+    tooltip?: object;
   };
   scales: {
     y: {
       ticks: {
         color: string;
+        font?: {
+          family?: string;
+          size?: number;
+        };
       };
       grid: {
+        color?: string;
+        drawBorder?: boolean;
+        display?: boolean;
+      };
+      border?: {
+        display?: boolean;
+      };
+      min?: number;
+      title?: {
+        display: boolean;
+        text: string;
         color: string;
       };
     };
     x: {
       ticks: {
         color: string;
+        font?: {
+          family?: string;
+          size?: number;
+        };
       };
       grid: {
-        color: string;
+        color?: string;
+        display?: boolean;
       };
+      border?: {
+        display?: boolean;
+      };
+    };
+  };
+  elements?: {
+    line?: {
+      tension?: number;
+      borderWidth?: number;
+    };
+    point?: {
+      radius?: number;
+      hitRadius?: number;
+      hoverRadius?: number;
     };
   };
 }

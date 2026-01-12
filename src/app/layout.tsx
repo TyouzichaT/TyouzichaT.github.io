@@ -1,25 +1,35 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter, JetBrains_Mono, Playfair_Display } from "next/font/google";
+import Navbar from "../components/layout/Navbar";
+import Footer from "../components/layout/Footer";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-jetbrains-mono",
   subsets: ["latin"],
+  display: "swap",
+});
+
+const playfair = Playfair_Display({
+  variable: "--font-playfair",
+  subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "You Zuo",
-  description: "Personal website and portfolio showcasing my work, skills, and experience",
-  keywords: ["portfolio", "developer", "personal website", "bio"],
+  title: "You Zuo | Quant & AI Architect",
+  description: "Architecting Financial Intelligence. Bridging traditional finance with AI-driven predictive modeling.",
+  keywords: ["quantitative finance", "AI", "financial engineering", "portfolio", "You Zuo"],
   authors: [{ name: "You Zuo" }],
   openGraph: {
-    title: "You Zuo",
-    description: "Personal website and portfolio showcasing my work, skills, and experience",
+    title: "You Zuo | Quant & AI Architect",
+    description: "Architecting Financial Intelligence. Bridging traditional finance with AI-driven predictive modeling.",
     type: "website",
   },
 };
@@ -30,11 +40,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${inter.variable} ${jetbrainsMono.variable} ${playfair.variable} antialiased bg-black text-white selection:bg-blue-500/30 font-sans`}
       >
+        <Navbar />
         {children}
+        <Footer />
       </body>
     </html>
   );

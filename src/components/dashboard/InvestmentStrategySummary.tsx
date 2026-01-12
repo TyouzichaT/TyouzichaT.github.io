@@ -32,11 +32,11 @@ const InvestmentStrategySummary = ({ overallSynthesis }: InvestmentStrategySumma
         <h2 className="text-3xl sm:text-4xl font-semibold mb-6 sm:mb-8 text-center bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-violet-400 to-purple-500">
           Current Investment Strategy Overview
         </h2>
-        
+
         {overallSynthesis ? (
           <div className="space-y-6">
             {/* Market Outlook Card */}
-            <motion.div 
+            <motion.div
               whileHover={{ scale: 1.01 }}
               className="bg-gradient-to-r from-gray-900 to-gray-800 rounded-2xl overflow-hidden shadow-xl border border-blue-900/30"
             >
@@ -54,7 +54,7 @@ const InvestmentStrategySummary = ({ overallSynthesis }: InvestmentStrategySumma
             {/* Strategy Cards Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
               {/* Equity Strategy */}
-              <motion.div 
+              <motion.div
                 whileHover={{ scale: 1.02, y: -5 }}
                 className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl overflow-hidden shadow-lg border border-green-900/30"
               >
@@ -71,7 +71,7 @@ const InvestmentStrategySummary = ({ overallSynthesis }: InvestmentStrategySumma
               </motion.div>
 
               {/* Fixed Income Strategy */}
-              <motion.div 
+              <motion.div
                 whileHover={{ scale: 1.02, y: -5 }}
                 className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl overflow-hidden shadow-lg border border-indigo-900/30"
               >
@@ -88,7 +88,7 @@ const InvestmentStrategySummary = ({ overallSynthesis }: InvestmentStrategySumma
               </motion.div>
 
               {/* Commodities Outlook */}
-              <motion.div 
+              <motion.div
                 whileHover={{ scale: 1.02, y: -5 }}
                 className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl overflow-hidden shadow-lg border border-amber-900/30"
               >
@@ -105,7 +105,7 @@ const InvestmentStrategySummary = ({ overallSynthesis }: InvestmentStrategySumma
               </motion.div>
 
               {/* Currency & Alternatives combined */}
-              <motion.div 
+              <motion.div
                 whileHover={{ scale: 1.02, y: -5 }}
                 className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl overflow-hidden shadow-lg border border-cyan-900/30"
               >
@@ -126,7 +126,7 @@ const InvestmentStrategySummary = ({ overallSynthesis }: InvestmentStrategySumma
             </div>
 
             {/* Key Risks Section */}
-            <motion.div 
+            <motion.div
               whileHover={{ scale: 1.01 }}
               className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl overflow-hidden shadow-xl border border-purple-900/30"
             >
@@ -158,8 +158,8 @@ const InvestmentStrategySummary = ({ overallSynthesis }: InvestmentStrategySumma
                     }
 
                     return (
-                      <motion.div 
-                        key={index} 
+                      <motion.div
+                        key={index}
                         whileHover={{ scale: 1.03, y: -3 }}
                         className="bg-gradient-to-br from-purple-900/20 to-purple-800/5 rounded-xl p-4 border border-purple-800/30 shadow-lg"
                       >
@@ -179,7 +179,7 @@ const InvestmentStrategySummary = ({ overallSynthesis }: InvestmentStrategySumma
           // Fallback to static content if no synthesis data
           <div className="space-y-6">
             {/* Economic Overview Card */}
-            <motion.div 
+            <motion.div
               whileHover={{ scale: 1.01 }}
               className="bg-gradient-to-r from-gray-900 to-gray-800 rounded-2xl overflow-hidden shadow-xl border border-blue-900/30"
             >
@@ -190,9 +190,9 @@ const InvestmentStrategySummary = ({ overallSynthesis }: InvestmentStrategySumma
                   </div>
                   <h3 className="text-xl font-semibold text-blue-400">Current Economic Environment</h3>
                 </div>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <motion.div 
+                  <motion.div
                     whileHover={{ scale: 1.02, x: 5 }}
                     className="bg-blue-900/20 backdrop-blur-sm p-4 rounded-xl border border-blue-900/30"
                   >
@@ -208,8 +208,8 @@ const InvestmentStrategySummary = ({ overallSynthesis }: InvestmentStrategySumma
                       </li>
                     </ul>
                   </motion.div>
-                  
-                  <motion.div 
+
+                  <motion.div
                     whileHover={{ scale: 1.02, x: 5 }}
                     className="bg-blue-900/20 backdrop-blur-sm p-4 rounded-xl border border-blue-900/30"
                   >
@@ -232,7 +232,7 @@ const InvestmentStrategySummary = ({ overallSynthesis }: InvestmentStrategySumma
             {/* Asset Strategy Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Favorable Assets */}
-              <motion.div 
+              <motion.div
                 whileHover={{ scale: 1.01 }}
                 className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl overflow-hidden shadow-xl border border-green-900/30"
               >
@@ -244,37 +244,37 @@ const InvestmentStrategySummary = ({ overallSynthesis }: InvestmentStrategySumma
                     </div>
                     <h3 className="text-xl font-semibold text-green-400">Favorable Asset Classes</h3>
                   </div>
-                  
+
                   <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">
-                    <motion.div 
+                    <motion.div
                       whileHover={{ scale: 1.02, x: 5 }}
                       className="flex items-start p-3 rounded-lg backdrop-blur-sm hover:bg-green-900/20 border border-green-800/30 transition-colors"
                     >
                       <span className="flex-shrink-0 h-5 w-5 rounded-full bg-green-500/20 flex items-center justify-center text-green-400 mr-3">•</span>
                       <span>Short/Intermediate Bonds</span>
                     </motion.div>
-                    <motion.div 
+                    <motion.div
                       whileHover={{ scale: 1.02, x: 5 }}
                       className="flex items-start p-3 rounded-lg backdrop-blur-sm hover:bg-green-900/20 border border-green-800/30 transition-colors"
                     >
                       <span className="flex-shrink-0 h-5 w-5 rounded-full bg-green-500/20 flex items-center justify-center text-green-400 mr-3">•</span>
                       <span>Quality Companies with Low Debt</span>
                     </motion.div>
-                    <motion.div 
+                    <motion.div
                       whileHover={{ scale: 1.02, x: 5 }}
                       className="flex items-start p-3 rounded-lg backdrop-blur-sm hover:bg-green-900/20 border border-green-800/30 transition-colors"
                     >
                       <span className="flex-shrink-0 h-5 w-5 rounded-full bg-green-500/20 flex items-center justify-center text-green-400 mr-3">•</span>
                       <span>Inflation-Protected Securities</span>
                     </motion.div>
-                    <motion.div 
+                    <motion.div
                       whileHover={{ scale: 1.02, x: 5 }}
                       className="flex items-start p-3 rounded-lg backdrop-blur-sm hover:bg-green-900/20 border border-green-800/30 transition-colors"
                     >
                       <span className="flex-shrink-0 h-5 w-5 rounded-full bg-green-500/20 flex items-center justify-center text-green-400 mr-3">•</span>
                       <span>Defensive Sectors (Healthcare, Staples)</span>
                     </motion.div>
-                    <motion.div 
+                    <motion.div
                       whileHover={{ scale: 1.02, x: 5 }}
                       className="flex items-start p-3 rounded-lg backdrop-blur-sm hover:bg-green-900/20 border border-green-800/30 transition-colors xl:col-span-2"
                     >
@@ -286,7 +286,7 @@ const InvestmentStrategySummary = ({ overallSynthesis }: InvestmentStrategySumma
               </motion.div>
 
               {/* Caution Assets */}
-              <motion.div 
+              <motion.div
                 whileHover={{ scale: 1.01 }}
                 className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl overflow-hidden shadow-xl border border-yellow-900/30"
               >
@@ -298,37 +298,37 @@ const InvestmentStrategySummary = ({ overallSynthesis }: InvestmentStrategySumma
                     </div>
                     <h3 className="text-xl font-semibold text-yellow-400">Use Caution With</h3>
                   </div>
-                  
+
                   <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">
-                    <motion.div 
+                    <motion.div
                       whileHover={{ scale: 1.02, x: 5 }}
                       className="flex items-start p-3 rounded-lg backdrop-blur-sm hover:bg-yellow-900/20 border border-yellow-800/30 transition-colors"
                     >
                       <span className="flex-shrink-0 h-5 w-5 rounded-full bg-yellow-500/20 flex items-center justify-center text-yellow-400 mr-3">•</span>
                       <span>Highly Leveraged Companies</span>
                     </motion.div>
-                    <motion.div 
+                    <motion.div
                       whileHover={{ scale: 1.02, x: 5 }}
                       className="flex items-start p-3 rounded-lg backdrop-blur-sm hover:bg-yellow-900/20 border border-yellow-800/30 transition-colors"
                     >
                       <span className="flex-shrink-0 h-5 w-5 rounded-full bg-yellow-500/20 flex items-center justify-center text-yellow-400 mr-3">•</span>
                       <span>Consumer Discretionary</span>
                     </motion.div>
-                    <motion.div 
+                    <motion.div
                       whileHover={{ scale: 1.02, x: 5 }}
                       className="flex items-start p-3 rounded-lg backdrop-blur-sm hover:bg-yellow-900/20 border border-yellow-800/30 transition-colors"
                     >
                       <span className="flex-shrink-0 h-5 w-5 rounded-full bg-yellow-500/20 flex items-center justify-center text-yellow-400 mr-3">•</span>
                       <span>Small Caps with Weak Financials</span>
                     </motion.div>
-                    <motion.div 
+                    <motion.div
                       whileHover={{ scale: 1.02, x: 5 }}
                       className="flex items-start p-3 rounded-lg backdrop-blur-sm hover:bg-yellow-900/20 border border-yellow-800/30 transition-colors"
                     >
                       <span className="flex-shrink-0 h-5 w-5 rounded-full bg-yellow-500/20 flex items-center justify-center text-yellow-400 mr-3">•</span>
                       <span>High Yield Credit</span>
                     </motion.div>
-                    <motion.div 
+                    <motion.div
                       whileHover={{ scale: 1.02, x: 5 }}
                       className="flex items-start p-3 rounded-lg backdrop-blur-sm hover:bg-yellow-900/20 border border-yellow-800/30 transition-colors xl:col-span-2"
                     >
@@ -341,7 +341,7 @@ const InvestmentStrategySummary = ({ overallSynthesis }: InvestmentStrategySumma
             </div>
 
             {/* Key Risks Section */}
-            <motion.div 
+            <motion.div
               whileHover={{ scale: 1.01 }}
               className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl overflow-hidden shadow-xl border border-purple-900/30"
             >
@@ -355,7 +355,7 @@ const InvestmentStrategySummary = ({ overallSynthesis }: InvestmentStrategySumma
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <motion.div 
+                  <motion.div
                     whileHover={{ scale: 1.03, y: -3 }}
                     className="bg-gradient-to-br from-purple-900/20 to-purple-800/5 rounded-xl p-4 border border-purple-800/30 shadow-lg"
                   >
@@ -365,7 +365,7 @@ const InvestmentStrategySummary = ({ overallSynthesis }: InvestmentStrategySumma
                     </h4>
                     <p className="text-sm text-gray-300 leading-relaxed pl-9">{formatRiskText("Monthly PCE data suggests inflation could be stubborn, potentially delaying or reversing Fed easing expectations.")}</p>
                   </motion.div>
-                  <motion.div 
+                  <motion.div
                     whileHover={{ scale: 1.03, y: -3 }}
                     className="bg-gradient-to-br from-purple-900/20 to-purple-800/5 rounded-xl p-4 border border-purple-800/30 shadow-lg"
                   >
@@ -375,7 +375,7 @@ const InvestmentStrategySummary = ({ overallSynthesis }: InvestmentStrategySumma
                     </h4>
                     <p className="text-sm text-gray-300 leading-relaxed pl-9">{formatRiskText("Growth slows more sharply than anticipated, leading to significant earnings downgrades and labor market deterioration.")}</p>
                   </motion.div>
-                  <motion.div 
+                  <motion.div
                     whileHover={{ scale: 1.03, y: -3 }}
                     className="bg-gradient-to-br from-purple-900/20 to-purple-800/5 rounded-xl p-4 border border-purple-800/30 shadow-lg"
                   >
@@ -385,7 +385,7 @@ const InvestmentStrategySummary = ({ overallSynthesis }: InvestmentStrategySumma
                     </h4>
                     <p className="text-sm text-gray-300 leading-relaxed pl-9">{formatRiskText("Conflicts or trade tensions disrupt supply chains, boost commodity prices, and dampen sentiment.")}</p>
                   </motion.div>
-                  <motion.div 
+                  <motion.div
                     whileHover={{ scale: 1.03, y: -3 }}
                     className="bg-gradient-to-br from-purple-900/20 to-purple-800/5 rounded-xl p-4 border border-purple-800/30 shadow-lg"
                   >
