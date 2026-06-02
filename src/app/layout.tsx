@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono, Playfair_Display } from "next/font/google";
+import { Inter, JetBrains_Mono, Faculty_Glyphic } from "next/font/google";
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
+import { LanguageProvider } from "../context/LanguageContext";
 import "./globals.css";
 
 const inter = Inter({
@@ -16,20 +17,21 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
-const playfair = Playfair_Display({
-  variable: "--font-playfair",
+const facultyGlyphic = Faculty_Glyphic({
+  weight: "400",
+  variable: "--font-faculty",
   subsets: ["latin"],
   display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "You Zuo | Quant & AI Architect",
-  description: "Architecting Financial Intelligence. Bridging traditional finance with AI-driven predictive modeling.",
-  keywords: ["quantitative finance", "AI", "financial engineering", "portfolio", "You Zuo"],
+  title: "You Zuo | Fintech Engineer",
+  description: "Building software and AI tools for finance.",
+  keywords: ["fintech", "AI", "software engineer", "finance", "You Zuo"],
   authors: [{ name: "You Zuo" }],
   openGraph: {
-    title: "You Zuo | Quant & AI Architect",
-    description: "Architecting Financial Intelligence. Bridging traditional finance with AI-driven predictive modeling.",
+    title: "You Zuo | Fintech Engineer",
+    description: "Building software and AI tools for finance.",
     type: "website",
   },
 };
@@ -40,13 +42,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en">
       <body
-        className={`${inter.variable} ${jetbrainsMono.variable} ${playfair.variable} antialiased bg-black text-white selection:bg-blue-500/30 font-sans`}
+        className={`${inter.variable} ${jetbrainsMono.variable} ${facultyGlyphic.variable} antialiased bg-white text-black font-sans`}
       >
-        <Navbar />
-        {children}
-        <Footer />
+        <LanguageProvider>
+          <Navbar />
+          {children}
+          <Footer />
+        </LanguageProvider>
       </body>
     </html>
   );

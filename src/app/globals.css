@@ -3,47 +3,22 @@
 @theme {
   --font-sans: var(--font-inter);
   --font-mono: var(--font-jetbrains-mono);
-  --font-serif: var(--font-playfair);
+  --font-display: var(--font-faculty);
 
-  --color-background: #050505;
-  --color-surface: #0a0a0a;
-  --color-surface-highlight: #171717;
-
-  --color-primary: #3b82f6;
-  --color-primary-glow: #3b82f6aa;
-
-  --color-secondary: #8b5cf6;
-  --color-accent: #f59e0b;
-
-  --color-text-primary: #e5e5e5;
-  --color-text-secondary: #a3a3a3;
-  --color-text-muted: #525252;
-}
-
-/* Glassmorphism Utilities */
-.glass {
-  background: rgba(10, 10, 10, 0.7);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.glass-card {
-  background: linear-gradient(145deg, rgba(23, 23, 23, 0.6) 0%, rgba(10, 10, 10, 0.8) 100%);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-}
-
-.text-gradient {
-  background: linear-gradient(to right, #60a5fa, #c084fc, #f472b6);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  --color-background: #ffffff;
+  --color-border: rgba(0, 0, 0, 0.08);
+  --color-text-primary: #0a0a0a;
+  --color-text-secondary: #555555;
+  --color-text-muted: #999999;
+  --color-accent: #16a34a;
 }
 
 body {
   background: var(--color-background);
   color: var(--color-text-primary);
   font-family: var(--font-sans);
+}
+
+::selection {
+  background: rgba(0, 0, 0, 0.1);
 }

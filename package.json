@@ -3,13 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "NODE_NO_WARNINGS=1 next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
+    "@next/swc-darwin-arm64": "^15.3.0",
     "chart.js": "^4.4.8",
     "framer-motion": "^12.6.5",
     "next": "15.3.0",
