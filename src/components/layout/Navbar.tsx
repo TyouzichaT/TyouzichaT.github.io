@@ -1,12 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { useLang } from "@/context/LanguageContext";
 import { useEffect, useState } from "react";
 
 export default function Navbar() {
-    const pathname = usePathname();
     const [mounted, setMounted] = useState(false);
     useEffect(() => setMounted(true), []);
     const { lang, setLang } = useLang();
